@@ -26,9 +26,13 @@ export default function InputPage() {
                 setLoading(true);
                 setResult(null);
                 try {
+                  const token = localStorage.getItem("d2d_token");
                   const res = await fetch("/api/dream/analyze", {
                     method: "POST",
-                    headers: { "Content-Type": "application/json" },
+                    headers: {
+                      "Content-Type": "application/json",
+                      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+                    },
                     body: JSON.stringify({ text }),
                   });
                   const data = await res.json();

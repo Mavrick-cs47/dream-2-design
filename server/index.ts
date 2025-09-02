@@ -13,6 +13,11 @@ export function createServer() {
   app.use(cors());
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
+  // Initialize passport (for Google OAuth flows)
+  try {
+    const passport = (await import("passport")).default;
+    app.use(passport.initialize());
+  } catch {}
 
   // Example API routes
   app.get("/api/ping", (_req, res) => {
