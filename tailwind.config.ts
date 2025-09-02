@@ -57,11 +57,27 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        brand: {
+          cyan: "hsl(199 90% 51%)",
+          purple: "hsl(268 95% 60%)",
+          teal: "hsl(188 92% 48%)",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+        xl: "calc(var(--radius) + 4px)",
+        "2xl": "calc(var(--radius) + 10px)",
+      },
+      boxShadow: {
+        glow: "0 0 0 1px hsl(199 90% 51% / 0.25), 0 0 30px hsl(199 90% 51% / 0.35)",
+      },
+      backgroundImage: {
+        "radial-faded":
+          "radial-gradient(1000px 500px at 50% -10%, hsl(268 95% 60% / 0.15) 0%, transparent 60%), radial-gradient(800px 400px at 110% 10%, hsl(199 90% 51% / 0.2) 0%, transparent 60%), radial-gradient(1000px 500px at 50% 120%, hsl(188 92% 48% / 0.15) 0%, transparent 60%)",
+        "neon-gradient":
+          "linear-gradient(135deg, hsl(199 90% 51%) 0%, hsl(268 95% 60%) 50%, hsl(188 92% 48%) 100%)",
       },
       keyframes: {
         "accordion-down": {
@@ -80,10 +96,20 @@ export default {
             height: "0",
           },
         },
+        floaty: {
+          "0%, 100%": { transform: "translateY(0px)" },
+          "50%": { transform: "translateY(-8px)" },
+        },
+        shimmer: {
+          "0%": { backgroundPosition: "-200% 0" },
+          "100%": { backgroundPosition: "200% 0" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        floaty: "floaty 6s ease-in-out infinite",
+        shimmer: "shimmer 2.5s linear infinite",
       },
     },
   },
