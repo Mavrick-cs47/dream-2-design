@@ -1,6 +1,7 @@
 import "dotenv/config";
 import express from "express";
 import cors from "cors";
+import passport from "passport";
 import { handleDemo } from "./routes/demo";
 import authRouter from "./routes/auth";
 import dreamRouter from "./routes/dream";
@@ -14,10 +15,7 @@ export function createServer() {
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
   // Initialize passport (for Google OAuth flows)
-  try {
-    const passport = (await import("passport")).default;
-    app.use(passport.initialize());
-  } catch {}
+  app.use(passport.initialize());
 
   // Example API routes
   app.get("/api/ping", (_req, res) => {
