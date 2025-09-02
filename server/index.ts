@@ -2,7 +2,9 @@ import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import { handleDemo } from "./routes/demo";
-import { analyzeDream, renderDreamImage } from "./routes/dream";
+import authRouter from "./routes/auth";
+import dreamRouter from "./routes/dream";
+import insightsRouter from "./routes/insights";
 
 export function createServer() {
   const app = express();
@@ -20,9 +22,10 @@ export function createServer() {
 
   app.get("/api/demo", handleDemo);
 
-  // Dream API placeholders
-  app.post("/api/dream/analyze", analyzeDream);
-  app.get("/api/dream/render", renderDreamImage);
+  // API Routers
+  app.use("/api/auth", authRouter);
+  app.use("/api/dream", dreamRouter);
+  app.use("/api/insights", insightsRouter);
 
   return app;
 }
