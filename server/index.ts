@@ -20,5 +20,9 @@ export function createServer() {
 
   app.get("/api/demo", handleDemo);
 
+  // Dream API placeholders
+  app.post("/api/dream/analyze", analyzeDream);
+  app.get("/api/dream/render", renderDreamImage);
+
   return app;
 }
