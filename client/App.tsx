@@ -29,15 +29,18 @@ const App = () => {
     }
   }
 
-  const clerkKey = (import.meta as any).env.VITE_CLERK_PUBLISHABLE_KEY as
-    | string
-    | undefined;
+  const clerkKey = (import.meta as any).env.VITE_CLERK_PUBLISHABLE_KEY as string | undefined;
+
+  const Providers = ({ children }: { children: React.ReactNode }) => {
+    return clerkKey ? (
+      <ClerkProvider publishableKey={clerkKey}>{children}</ClerkProvider>
+    ) : (
+      <>{children}</>
+    );
+  };
 
   return (
-    <ClerkProvider
-      publishableKey={clerkKey}
-      navigate={(to) => window.history.pushState({}, "", to)}
-    >
+    <Providers>
       <QueryClientProvider client={queryClient}>
         <TooltipProvider>
           <Toaster />
@@ -48,19 +51,19 @@ const App = () => {
               <Route path="/input" element={<Input />} />
               <Route path="/journal" element={<Journal />} />
               <Route path="/visualizer" element={<Visualizer />} />
-              <Route path="/sign-in" element={<SignInPage />} />
-              <Route
-                path="/auth"
-                element={<Navigate to="/sign-in" replace />}
-              />
-              <Route path="/sign-up" element={<SignUpPage />} />
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              {clerkKey ? (
+                <>
+                  <Route path="/sign-in" element={<SignInPage />} />
+                  <Route path="/auth" element={<Navigate to="/sign-in" replace />} />
+                  <Route path="/sign-up" element={<SignUpPage />} />
+                </>
+              ) : null}
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
         </TooltipProvider>
       </QueryClientProvider>
-    </ClerkProvider>
+    </Providers>
   );
 };
 
