@@ -85,7 +85,7 @@ export async function generateDreamImage(
     const seed = Math.abs(
       [...dreamText].reduce((a, c) => a + c.charCodeAt(0), 0),
     );
-    const url = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=1280&height=720&nologo=true&seed=${seed}`;
+    const url = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=1344&height=768&nologo=true&seed=${seed}`;
     return { success: true, imageURL: url };
   }
 
@@ -171,7 +171,7 @@ export async function generateDreamImage(
     const seed = Math.abs(
       [...dreamText].reduce((a, c) => a + c.charCodeAt(0), 0),
     );
-    const url = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=1280&height=720&nologo=true&seed=${seed}`;
+    const url = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=1344&height=768&nologo=true&seed=${seed}`;
     return { success: true, imageURL: url };
   }
 }
