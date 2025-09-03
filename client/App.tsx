@@ -72,4 +72,12 @@ const App = () => {
   );
 };
 
-createRoot(document.getElementById("root")!).render(<App />);
+const container = document.getElementById("root")!;
+const existing: any = (container as any).__reactRoot || null;
+if (existing && typeof existing.render === "function") {
+  existing.render(<App />);
+} else {
+  const root = createRoot(container);
+  (container as any).__reactRoot = root;
+  root.render(<App />);
+}
