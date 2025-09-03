@@ -9,8 +9,6 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ClerkProvider } from "@clerk/clerk-react";
 import Index from "./pages/Index";
 import Input from "./pages/Input";
-import Journal from "./pages/Journal";
-import Visualizer from "./pages/Visualizer";
 import SignInPage from "./pages/SignIn";
 import SignUpPage from "./pages/SignUp";
 import NotFound from "./pages/NotFound";
@@ -51,8 +49,6 @@ const App = () => {
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/input" element={<Input />} />
-              <Route path="/journal" element={<Journal />} />
-              <Route path="/visualizer" element={<Visualizer />} />
               {clerkKey ? (
                 <>
                   <Route path="/sign-in" element={<SignInPage />} />
