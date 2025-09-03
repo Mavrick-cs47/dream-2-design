@@ -89,6 +89,27 @@ router.get("/render/:id", limiter, auth, async (req, res) => {
   return res.json({ imageURL, updated: !!updated });
 });
 
+router.post("/render", limiter, auth, async (req, res) => {
+  const schema = z.object({ dreamText: z.string().min(5), id: z.string().optional() });
+  const p = schema.safeParse(req.body);
+  if (!p.success) return res.status(400).json({ success: false, error: "Dream text required" });
+
+  // Demo fallback or missing API key is handled inside service
+  try {
+    const { generateDreamImage } = await import("../services/image");
+    const result = await generateDreamImage(p.data.dreamText);
+    if (!result.success) return res.status(500).json(result);
+
+    if (!DEMO && p.data.id) {
+      const repos = await getRepos();
+      await repos.dreams.update(p.data.id, { imageURL: result.imageURL });
+    }
+    return res.json({ success: true, imageURL: result.imageURL });
+  } catch (e) {
+    return res.status(500).json({ success: false, error: "Image generation failed" });
+  }
+});
+
 router.post("/remix/:id", limiter, auth, async (req, res) => {
   const schema = z.object({ prompt: z.string().min(3) });
   const p = schema.safeParse(req.body);
