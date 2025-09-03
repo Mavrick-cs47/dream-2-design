@@ -36,7 +36,7 @@ export default function InputPage() {
                     body: JSON.stringify({ text }),
                   });
                   const data = await res.json();
-                  const summary = data.title || data.summary || "Your dream preview";
+                  const summary = data.title || data.summary || text.slice(0, 80) || "Your dream preview";
                   let imageUrl = data.imageUrl as string | undefined;
                   try {
                     const imgRes = await fetch(`/api/dream/render/${data.id}`, {
@@ -50,6 +50,7 @@ export default function InputPage() {
                   setResult({ summary, imageUrl: imageUrl || "/placeholder.svg", emotions: data.emotions || {} });
                 } catch (e) {
                   console.error(e);
+                  setResult({ summary: text.slice(0, 80) || "Your dream preview", imageUrl: "/placeholder.svg", emotions: {} });
                 } finally {
                   setLoading(false);
                 }
