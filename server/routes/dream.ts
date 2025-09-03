@@ -173,6 +173,24 @@ router.post("/remix/:id", limiter, auth, async (req, res) => {
   return res.json({ id: dream.id, title: summary, keywords, emotions, timestamp: dream.timestamp });
 });
 
+router.post("/story", limiter, auth, async (req, res) => {
+  const schema = z.object({ dreamText: z.string().min(5), id: z.string().optional() });
+  const p = schema.safeParse(req.body);
+  if (!p.success) return res.status(400).json({ success: false, error: "Dream text required" });
+  try {
+    const { generateDreamStory } = await import("../services/story");
+    const result = await generateDreamStory(p.data.dreamText);
+    if (!result.success) return res.status(500).json(result);
+    if (!DEMO && p.data.id) {
+      const repos = await getRepos();
+      await repos.dreams.update(p.data.id, { analysisJSON: { storyImages: result.storyImages } as any });
+    }
+    return res.json({ success: true, storyImages: result.storyImages });
+  } catch (e) {
+    return res.status(500).json({ success: false, error: "Failed to generate story" });
+  }
+});
+
 router.get("/audio/:id", auth, async (_req, res) => {
   return res.status(202).json({ audioUrl: null, message: DEMO ? "Demo mode: TTS disabled" : "Text-to-Speech not configured yet" });
 });
