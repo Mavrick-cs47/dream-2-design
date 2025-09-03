@@ -25,8 +25,9 @@ export async function generateDreamImage(dreamText: string): Promise<ImageGenRes
 
   // Demo or missing key -> graceful fallback
   if (!apiKey) {
-    const seed = encodeURIComponent(dreamText.slice(0, 40));
-    return { success: true, imageURL: `https://picsum.photos/seed/${seed}/1280/720` };
+    const seed = Math.abs([...dreamText].reduce((a,c)=>a+c.charCodeAt(0),0));
+    const url = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=1280&height=720&nologo=true&seed=${seed}`;
+    return { success: true, imageURL: url };
   }
 
   try {
@@ -98,7 +99,8 @@ export async function generateDreamImage(dreamText: string): Promise<ImageGenRes
 
     return { success: false, error: "Unsupported provider" };
   } catch (e) {
-    const seed = encodeURIComponent(dreamText.slice(0, 40));
-    return { success: true, imageURL: `https://picsum.photos/seed/${seed}/1280/720` };
+    const seed = Math.abs([...dreamText].reduce((a,c)=>a+c.charCodeAt(0),0));
+    const url = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=1280&height=720&nologo=true&seed=${seed}`;
+    return { success: true, imageURL: url };
   }
 }
