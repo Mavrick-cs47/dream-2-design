@@ -19,7 +19,7 @@ export default function InputPage() {
             className="w-full min-h-[160px] md:min-h-[220px] resize-y rounded-xl bg-black/30 border border-white/10 p-4 focus:outline-none focus:ring-2 focus:ring-brand-cyan/50"
           />
           <div className="mt-4 flex flex-col sm:flex-row gap-3">
-            <VoiceRecorder />
+            <VoiceRecorder onText={(t)=> setText((p)=> (p ? `${p} ${t}` : t))} />
             <button
               disabled={!text.trim() || loading}
               onClick={async () => {
