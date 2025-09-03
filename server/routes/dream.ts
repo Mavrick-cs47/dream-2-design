@@ -21,18 +21,49 @@ function extractKeywords(text: string): string[] {
 }
 
 function analyzeEmotions(text: string): Record<string, number> {
-  const lex: Record<string, string> = {
-    joy: "happy joy love wonderful delight",
-    fear: "fear afraid scary dark chased monster",
-    mystery: "mystery unknown fog shadow secret",
-    anxiety: "anxious stress worry nervous late exam",
+  const t = text.toLowerCase();
+  const tokens = (t.match(/[a-z']+/g) || []).map((w) => w.replace(/'+/g, ""));
+
+  // Expanded lightweight lexicon with common dream words
+  const lex: Record<string, string[]> = {
+    joy: [
+      "happy","joy","love","wonderful","delight","sparkle","glow","light","flying","beautiful","calm","serene","peace","magic","magical","shimmer","glitter","neon","colorful",
+    ],
+    fear: [
+      "fear","afraid","scary","dark","chased","monster","ghost","falling","alone","trapped","danger","scream","shadowy","nightmare",
+    ],
+    mystery: [
+      "mystery","unknown","fog","shadow","secret","maze","portal","mirror","moon","moonlight","forest","ocean","space","strange","weird","uncanny","glass",
+    ],
+    anxiety: [
+      "anxious","stress","worry","nervous","late","exam","lost","missing","broken","forget","forgot","deadline","pressure","crowded",
+    ],
   };
-  const counts: Record<string, number> = {};
-  const words = text.toLowerCase();
-  for (const [emo, list] of Object.entries(lex)) {
-    counts[emo] = list.split(" ").reduce((acc, k) => acc + (words.includes(k) ? 1 : 0), 0);
+
+  const counts: Record<string, number> = { joy: 0, fear: 0, mystery: 0, anxiety: 0 };
+  for (const [emo, words] of Object.entries(lex)) {
+    for (const w of words) {
+      // count occurrences for weight rather than just presence
+      counts[emo] += tokens.reduce((acc, tok) => acc + (tok === w ? 1 : 0), 0);
+      // also partial match for descriptive words
+      if (!words.includes(w)) continue;
+    }
   }
-  const total = Object.values(counts).reduce((a,b)=>a+b, 0) || 1;
+
+  // Heuristic boosts from co-occurrence phrases
+  if (/moon|moonlight|night|stars?/.test(t)) counts.mystery += 2;
+  if (/glass|mirror|portal|maze/.test(t)) counts.mystery += 1;
+  if (/glow|sparkle|shimmer|colorful|neon|beautiful|calm/.test(t)) counts.joy += 2;
+  if (/chase|chased|falling|alone|dark/.test(t)) counts.fear += 2;
+  if (/late|exam|lost|deadline|forgot/.test(t)) counts.anxiety += 2;
+
+  let total = Object.values(counts).reduce((a, b) => a + b, 0);
+  if (total === 0) {
+    // Default balanced distribution leaning to mystery for neutral dreams
+    counts.mystery = 4; counts.joy = 3; counts.anxiety = 2; counts.fear = 2;
+    total = 11;
+  }
+
   const scores: Record<string, number> = {};
   for (const [k, v] of Object.entries(counts)) scores[k] = Math.min(1, v / total);
   return scores;
