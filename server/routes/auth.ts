@@ -2,7 +2,7 @@ import { Router } from "express";
 import { getRepos } from "../db";
 import { z } from "zod";
 import bcrypt from "bcryptjs";
-import { signToken } from "../auth/jwt";
+import { signToken, requireAuth } from "../auth/jwt";
 import passport from "passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 
@@ -87,9 +87,20 @@ router.get("/google/callback", (req, res, next) => {
   })(req, res, next);
 });
 
-router.get("/me", async (req, res) => {
-  // Frontend should send Authorization: Bearer <token> and use /api/auth/me through protected endpoints
+router.get("/me", async (_req, res) => {
   return res.status(200).json({ ok: true });
+});
+
+router.get("/profile", requireAuth, async (req, res) => {
+  try {
+    const repos = await getRepos();
+    const user = await repos.users.findById((req as any).user.sub);
+    if (!user) return res.status(404).json({ error: "User not found" });
+    const { id, name, email, createdAt } = user;
+    return res.json({ id, name, email, createdAt });
+  } catch (e) {
+    return res.status(500).json({ error: "Failed to load profile" });
+  }
 });
 
 export default router;
