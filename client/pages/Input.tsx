@@ -36,7 +36,18 @@ export default function InputPage() {
                     body: JSON.stringify({ text }),
                   });
                   const data = await res.json();
-                  setResult(data);
+                  const summary = data.title || data.summary || "Your dream preview";
+                  let imageUrl = data.imageUrl as string | undefined;
+                  try {
+                    const imgRes = await fetch(`/api/dream/render/${data.id}`, {
+                      headers: {
+                        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+                      },
+                    });
+                    const img = await imgRes.json();
+                    imageUrl = img.imageURL || imageUrl;
+                  } catch {}
+                  setResult({ summary, imageUrl: imageUrl || "/placeholder.svg", emotions: data.emotions || {} });
                 } catch (e) {
                   console.error(e);
                 } finally {
