@@ -22,7 +22,7 @@ export default function Index() {
             transition={{ delay: 0.1, duration: 0.6 }}
             className="mt-4 text-white/80 text-lg"
           >
-            Dream-to-Design (D2D) lets you record or type your dreams and visualize them with AI
+            Dream-to-Design (D2D) lets you type your dreams and visualize them with AI
             in an immersive, futuristic space.
           </motion.p>
           <motion.div
@@ -37,17 +37,11 @@ export default function Index() {
             >
               Start with Text
             </Link>
-            <Link
-              to="/input"
-              className="px-6 py-3 rounded-full bg-white/5 border border-white/10 text-white/90 hover:text-white hover:bg-white/10"
-            >
-              Record Your Voice
-            </Link>
           </motion.div>
 
           <div className="mt-10 grid md:grid-cols-3 gap-6">
             {[
-              { title: "Capture", desc: "Type or speak your dream details in seconds.", icon: "M3 12h18M12 3v18" },
+              { title: "Capture", desc: "Type your dream details in seconds.", icon: "M3 12h18M12 3v18" },
               { title: "Visualize", desc: "AI turns your dream into stunning art.", icon: "M12 2l3 7h7l-5.5 4 2.5 7L12 16l-7 4 2.5-7L2 9h7z" },
               { title: "Understand", desc: "View insights, symbols, and emotions.", icon: "M12 8a4 4 0 100 8 4 4 0 000-8z M12 2v2m0 16v2m10-10h-2M4 12H2m14.95 7.07l-1.41-1.41M6.46 6.46 5.05 5.05m13.49 1.41-1.41 1.41M6.46 17.54l-1.41 1.41" },
             ].map((c, i) => (
@@ -83,7 +77,7 @@ export default function Index() {
           <div className="glass-card p-6 md:p-8">
             <h2 className="text-2xl font-bold mb-4">How It Works</h2>
             <ol className="space-y-3 text-white/80">
-              <li className="flex items-start gap-3"><span className="mt-1 h-6 w-6 shrink-0 rounded-full bg-brand-cyan/30 border border-brand-cyan/40 flex items-center justify-center text-xs">1</span> Record or type your dream</li>
+              <li className="flex items-start gap-3"><span className="mt-1 h-6 w-6 shrink-0 rounded-full bg-brand-cyan/30 border border-brand-cyan/40 flex items-center justify-center text-xs">1</span> Type your dream</li>
               <li className="flex items-start gap-3"><span className="mt-1 h-6 w-6 shrink-0 rounded-full bg-brand-cyan/30 border border-brand-cyan/40 flex items-center justify-center text-xs">2</span> AI analyzes key symbols & emotions</li>
               <li className="flex items-start gap-3"><span className="mt-1 h-6 w-6 shrink-0 rounded-full bg-brand-cyan/30 border border-brand-cyan/40 flex items-center justify-center text-xs">3</span> Get a beautiful visualization</li>
               <li className="flex items-start gap-3"><span className="mt-1 h-6 w-6 shrink-0 rounded-full bg-brand-cyan/30 border border-brand-cyan/40 flex items-center justify-center text-xs">4</span> Explore insights in your journal</li>
