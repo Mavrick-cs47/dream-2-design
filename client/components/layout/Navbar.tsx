@@ -1,6 +1,11 @@
 import { NavLink, useLocation } from "react-router-dom";
 import { useSfx } from "@/hooks/use-sfx";
-import { SignedIn, SignedOut, UserButton, SignInButton } from "@clerk/clerk-react";
+import {
+  SignedIn,
+  SignedOut,
+  UserButton,
+  SignInButton,
+} from "@clerk/clerk-react";
 
 const links = [
   { to: "/", label: "Home" },
@@ -64,7 +69,11 @@ export default function Navbar() {
                 </SignInButton>
               </SignedOut>
               <SignedIn>
-                <UserButton appearance={{ elements: { userButtonAvatarBox: "shadow-glow" } }} />
+                <UserButton
+                  appearance={{
+                    elements: { userButtonAvatarBox: "shadow-glow" },
+                  }}
+                />
               </SignedIn>
             </>
           ) : null}

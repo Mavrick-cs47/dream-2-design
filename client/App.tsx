@@ -29,7 +29,9 @@ const App = () => {
     }
   }
 
-  const clerkKey = (import.meta as any).env.VITE_CLERK_PUBLISHABLE_KEY as string | undefined;
+  const clerkKey = (import.meta as any).env.VITE_CLERK_PUBLISHABLE_KEY as
+    | string
+    | undefined;
 
   const Providers = ({ children }: { children: React.ReactNode }) => {
     return clerkKey ? (
@@ -54,7 +56,10 @@ const App = () => {
               {clerkKey ? (
                 <>
                   <Route path="/sign-in" element={<SignInPage />} />
-                  <Route path="/auth" element={<Navigate to="/sign-in" replace />} />
+                  <Route
+                    path="/auth"
+                    element={<Navigate to="/sign-in" replace />}
+                  />
                   <Route path="/sign-up" element={<SignUpPage />} />
                 </>
               ) : null}
