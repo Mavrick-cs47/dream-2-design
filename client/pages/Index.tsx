@@ -121,14 +121,16 @@ export default function Index() {
                 Explore insights in your journal
               </li>
             </ol>
-            <div className="mt-6">
-              <Link
-                to="/sign-up"
-                className="inline-flex items-center px-6 py-3 rounded-full bg-neon-gradient bg-[length:200%_200%] animate-shimmer text-black font-semibold border border-white/10"
-              >
-                Sign Up
-              </Link>
-            </div>
+            {Boolean((import.meta as any).env.VITE_CLERK_PUBLISHABLE_KEY) ? (
+              <div className="mt-6">
+                <Link
+                  to="/sign-up"
+                  className="inline-flex items-center px-6 py-3 rounded-full bg-neon-gradient bg-[length:200%_200%] animate-shimmer text-black font-semibold border border-white/10"
+                >
+                  Sign Up
+                </Link>
+              </div>
+            ) : null}
           </div>
         </div>
       </section>
