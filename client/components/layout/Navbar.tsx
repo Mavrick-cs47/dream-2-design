@@ -9,8 +9,6 @@ import {
 
 const links = [
   { to: "/", label: "Home" },
-  { to: "/journal", label: "Journal" },
-  { to: "/visualizer", label: "Visualizer" },
 ];
 
 export default function Navbar() {
