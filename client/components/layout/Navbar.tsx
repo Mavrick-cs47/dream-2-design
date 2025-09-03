@@ -16,7 +16,11 @@ export default function Navbar() {
     <header className="sticky top-0 z-40 backdrop-blur-xl bg-black/30 border-b border-white/10">
       <nav className="container flex items-center justify-between py-3">
         <a href="/" onMouseEnter={hover} onClick={click} className="flex items-center gap-2 group">
-          <div className="h-8 w-8 rounded-xl bg-gradient-to-br from-brand-purple to-brand-cyan glow" />
+          <img
+            src="https://cdn.builder.io/api/v1/image/assets%2F593ada92f6a849fdaf6600d87713b3e8%2F1d15e19565ec48abb938ffbdbd1b87f1?format=webp&width=800"
+            alt="Dream to Design logo"
+            className="h-8 w-8 rounded-full object-cover glow"
+          />
           <span className="text-lg font-extrabold tracking-widest neon-text">D2D</span>
         </a>
         <div className="hidden md:flex items-center gap-1 rounded-full border border-white/10 bg-white/5 p-1">
