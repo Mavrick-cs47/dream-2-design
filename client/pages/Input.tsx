@@ -39,10 +39,13 @@ export default function InputPage() {
                   const summary = data.title || data.summary || text.slice(0, 80) || "Your dream preview";
                   let imageUrl = data.imageUrl as string | undefined;
                   try {
-                    const imgRes = await fetch(`/api/dream/render/${data.id}`, {
+                    const imgRes = await fetch(`/api/dream/render`, {
+                      method: "POST",
                       headers: {
+                        "Content-Type": "application/json",
                         ...(token ? { Authorization: `Bearer ${token}` } : {}),
                       },
+                      body: JSON.stringify({ dreamText: text, id: data.id }),
                     });
                     const img = await imgRes.json();
                     imageUrl = img.imageURL || imageUrl;
