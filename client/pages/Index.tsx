@@ -84,7 +84,7 @@ export default function Index() {
             </ol>
             <div className="mt-6">
               <Link
-                to="/auth"
+                to="/sign-up"
                 className="inline-flex items-center px-6 py-3 rounded-full bg-neon-gradient bg-[length:200%_200%] animate-shimmer text-black font-semibold border border-white/10"
               >
                 Sign Up
