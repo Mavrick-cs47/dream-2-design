@@ -1,5 +1,3 @@
-import fetch from "node-fetch";
-
 export interface ImageGenResult {
   success: boolean;
   imageURL?: string;
@@ -32,7 +30,6 @@ export async function generateDreamImage(dreamText: string): Promise<ImageGenRes
 
   try {
     if (provider === "stability") {
-      // Stability AI (SDXL) Text-to-Image
       const resp = await fetch("https://api.stability.ai/v1/generation/stable-diffusion-xl-1024-v1-0/text-to-image", {
         method: "POST",
         headers: {
@@ -74,23 +71,28 @@ export async function generateDreamImage(dreamText: string): Promise<ImageGenRes
     }
 
     if (provider === "replicate") {
-      const resp = await fetch("https://api.replicate.com/v1/predictions", {
+      const version = process.env.REPLICATE_MODEL_VERSION || "";
+      const model = process.env.REPLICATE_MODEL || "black-forest-labs/flux-schnell";
+      const endpoint = version
+        ? "https://api.replicate.com/v1/predictions"
+        : `https://api.replicate.com/v1/models/${model}/predictions`;
+
+      const body = version ? { version, input: { prompt } } : { input: { prompt } };
+
+      const resp = await fetch(endpoint, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${apiKey}`,
           "Content-Type": "application/json",
+          Prefer: "wait",
         },
-        body: JSON.stringify({
-          version: process.env.REPLICATE_MODEL_VERSION || "stability-ai/sdxl:8f8f6f3d8b8b...",
-          input: { prompt },
-        }),
+        body: JSON.stringify(body),
       });
       if (!resp.ok) throw new Error(`Replicate status ${resp.status}`);
       const data: any = await resp.json();
-      // Polling omitted; some deployments return output URL(s) directly
-      const url = data?.output?.[0] || data?.urls?.get || data?.output;
-      if (!url) throw new Error("No image URL");
-      return { success: true, imageURL: url };
+      const out = Array.isArray(data?.output) ? data.output[0] : data?.output;
+      if (!out) throw new Error("No image URL");
+      return { success: true, imageURL: out };
     }
 
     return { success: false, error: "Unsupported provider" };
