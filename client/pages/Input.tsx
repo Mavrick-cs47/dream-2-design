@@ -4,7 +4,7 @@ import Layout from "@/components/layout/Layout";
 export default function InputPage() {
   const [text, setText] = useState("");
   const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState<null | { summary: string; imageUrl: string; emotions: Record<string, number> }>(null);
+  const [result, setResult] = useState<null | { summary: string; imageUrl: string; emotions: Record<string, number>; storyImages?: string[] }>(null);
 
   return (
     <Layout>
@@ -49,7 +49,20 @@ export default function InputPage() {
                     const img = await imgRes.json();
                     imageUrl = img.imageURL || imageUrl;
                   } catch {}
-                  setResult({ summary, imageUrl: imageUrl || "/placeholder.svg", emotions: data.emotions || {} });
+                  let storyImages: string[] | undefined;
+                  try {
+                    const storyRes = await fetch(`/api/dream/story`, {
+                      method: "POST",
+                      headers: {
+                        "Content-Type": "application/json",
+                        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+                      },
+                      body: JSON.stringify({ dreamText: text, id: data.id }),
+                    });
+                    const sj = await storyRes.json();
+                    storyImages = sj.storyImages;
+                  } catch {}
+                  setResult({ summary, imageUrl: imageUrl || "/placeholder.svg", emotions: data.emotions || {}, storyImages });
                 } catch (e) {
                   console.error(e);
                   setResult({ summary: text.slice(0, 80) || "Your dream preview", imageUrl: "/placeholder.svg", emotions: {} });
@@ -85,6 +98,10 @@ export default function InputPage() {
                 </div>
               ))}
             </div>
+
+            {result.storyImages?.length ? (
+              <DreamStoryViewer images={result.storyImages} />
+            ) : null}
           </div>
         )}
       </div>
