@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import Layout from "@/components/layout/Layout";
 
 export default function InputPage() {
@@ -11,15 +11,14 @@ export default function InputPage() {
       <div className="max-w-3xl mx-auto space-y-6">
         <div className="glass-card p-6 md:p-8">
           <h1 className="text-2xl font-bold mb-2">Describe Your Dream</h1>
-          <p className="text-white/70 mb-4">Type or record your dream. We will analyze and visualize it using AI.</p>
+          <p className="text-white/70 mb-4">Type your dream. We will analyze and visualize it using AI.</p>
           <textarea
             value={text}
             onChange={(e) => setText(e.target.value)}
             placeholder="Last night I found myself in a city of floating lights..."
             className="w-full min-h-[160px] md:min-h-[220px] resize-y rounded-xl bg-black/30 border border-white/10 p-4 focus:outline-none focus:ring-2 focus:ring-brand-cyan/50"
           />
-          <div className="mt-4 flex flex-col sm:flex-row gap-3">
-            <VoiceRecorder onText={(t)=> setText((p)=> (p ? `${p} ${t}` : t))} />
+          <div className="mt-4 flex flex-col sm:flex-row gap-3 justify-start">
             <button
               disabled={!text.trim() || loading}
               onClick={async () => {
@@ -99,87 +98,5 @@ function Spinner() {
       <circle className="opacity-20" cx="25" cy="25" r="20" stroke="currentColor" strokeWidth="5" fill="none" />
       <circle cx="25" cy="25" r="20" stroke="currentColor" strokeWidth="5" fill="none" strokeDasharray="100" strokeDashoffset="75" />
     </svg>
-  );
-}
-
-function VoiceRecorder({ onText }: { onText?: (text: string) => void }) {
-  const [recording, setRecording] = useState(false);
-  const [duration, setDuration] = useState(0);
-  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
-  const chunksRef = useRef<BlobPart[]>([]);
-  const timerRef = useRef<number | null>(null);
-  const recogRef = useRef<any>(null);
-
-  useEffect(() => {
-    return () => {
-      if (timerRef.current) window.clearInterval(timerRef.current);
-      if (recogRef.current) try { recogRef.current.stop(); } catch {}
-    };
-  }, []);
-
-  const start = async () => {
-    // Web Speech API for transcription (Chrome/Brave)
-    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-    if (SpeechRecognition) {
-      const recog = new SpeechRecognition();
-      recogRef.current = recog;
-      recog.lang = "en-US";
-      recog.continuous = true;
-      recog.interimResults = true;
-      let finalText = "";
-      recog.onresult = (e: any) => {
-        for (let i = e.resultIndex; i < e.results.length; i++) {
-          const transcript = e.results[i][0].transcript;
-          if (e.results[i].isFinal) {
-            finalText += transcript + " ";
-            onText?.(finalText.trim());
-          }
-        }
-      };
-      try { recog.start(); } catch {}
-    }
-
-    // Start MediaRecorder to acquire mic permission and allow future upload
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    const mr = new MediaRecorder(stream);
-    mediaRecorderRef.current = mr;
-    chunksRef.current = [];
-    setDuration(0);
-    timerRef.current = window.setInterval(() => setDuration((d) => d + 1), 1000);
-    mr.ondataavailable = (e) => chunksRef.current.push(e.data);
-    mr.onstop = () => {
-      if (timerRef.current) window.clearInterval(timerRef.current);
-      stream.getTracks().forEach((t) => t.stop());
-    };
-    mr.start();
-    setRecording(true);
-  };
-
-  const stop = () => {
-    mediaRecorderRef.current?.stop();
-    try { recogRef.current?.stop(); } catch {}
-    setRecording(false);
-  };
-
-  return (
-    <button
-      onClick={recording ? stop : start}
-      className={`px-6 py-3 rounded-full border ${
-        recording
-          ? "bg-brand-purple/30 border-brand-purple/50 text-white"
-          : "bg-white/5 border-white/10 text-white/90 hover:text-white hover:bg-white/10"
-      }`}
-    >
-      <span className="inline-flex items-center gap-2">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-          {recording ? (
-            <path d="M7 7h10v10H7z" stroke="currentColor" strokeWidth="2" />
-          ) : (
-            <path d="M12 3a3 3 0 00-3 3v6a3 3 0 006 0V6a3 3 0 00-3-3z M19 11a7 7 0 01-14 0m7 7v3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-          )}
-        </svg>
-        {recording ? `Recording... ${duration}s` : "Record Voice"}
-      </span>
-    </button>
   );
 }
