@@ -22,54 +22,19 @@ export default function DreamStoryViewer({ images }: { images: string[] }) {
 
   return (
     <div className="mt-6">
-      <div className="relative overflow-hidden rounded-xl border border-white/10 bg-black/30 aspect-video">
-        <AnimatePresence mode="wait">
-          <motion.img
-            key={i}
-            src={imgs[i]}
-            alt={`Dream scene ${i + 1}`}
-            className="absolute inset-0 h-full w-full object-cover"
-            initial={{ opacity: 0, scale: 1.05 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 1.05 }}
-            transition={{ duration: 0.6 }}
-            onError={(e) => {
-              (e.currentTarget as HTMLImageElement).src = "/placeholder.svg";
-            }}
-          />
-        </AnimatePresence>
-      </div>
-      <div className="mt-3 flex items-center justify-between">
-        <div className="flex gap-2">
-          {imgs.map((_, idx) => (
-            <button
-              key={idx}
-              onClick={() => setI(idx)}
-              className={`h-1.5 w-8 rounded ${idx === i ? "bg-brand-cyan" : "bg-white/20"}`}
-              aria-label={`Go to scene ${idx + 1}`}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        {imgs.slice(0, 6).map((src, idx) => (
+          <div key={idx} className="relative overflow-hidden rounded-xl border border-white/10 bg-black/30 aspect-video">
+            <img
+              src={src}
+              alt={`Dream scene ${idx + 1}`}
+              className="absolute inset-0 h-full w-full object-cover"
+              onError={(e) => {
+                (e.currentTarget as HTMLImageElement).src = "/placeholder.svg";
+              }}
             />
-          ))}
-        </div>
-        <div className="flex gap-2">
-          <button
-            onClick={() => setI((i - 1 + imgs.length) % imgs.length)}
-            className="px-3 py-1 rounded-full bg-white/5 border border-white/10 text-white/80"
-          >
-            Back
-          </button>
-          <button
-            onClick={() => setPlaying((p) => !p)}
-            className="px-3 py-1 rounded-full bg-brand-cyan/20 border border-brand-cyan/40 text-white"
-          >
-            {playing ? "Pause" : "Play"}
-          </button>
-          <button
-            onClick={() => setI((i + 1) % imgs.length)}
-            className="px-3 py-1 rounded-full bg-white/5 border border-white/10 text-white/80"
-          >
-            Next
-          </button>
-        </div>
+          </div>
+        ))}
       </div>
     </div>
   );
