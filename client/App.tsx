@@ -46,6 +46,7 @@ const App = () => {
               <Route path="/visualizer" element={<Visualizer />} />
               <Route path="/insights" element={<Insights />} />
               <Route path="/sign-in" element={<SignInPage />} />
+              <Route path="/auth" element={<Navigate to="/sign-in" replace />} />
               <Route path="/sign-up" element={<SignUpPage />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
