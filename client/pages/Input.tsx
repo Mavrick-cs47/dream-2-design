@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Layout from "@/components/layout/Layout";
+import DreamStoryViewer from "@/components/story/DreamStoryViewer";
 
 export default function InputPage() {
   const [text, setText] = useState("");
