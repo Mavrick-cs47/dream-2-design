@@ -1,11 +1,6 @@
 import { NavLink, useLocation } from "react-router-dom";
 import { useSfx } from "@/hooks/use-sfx";
-import {
-  SignedIn,
-  SignedOut,
-  UserButton,
-  SignInButton,
-} from "@clerk/clerk-react";
+import { SignedIn, SignedOut, UserButton, SignInButton } from "@clerk/clerk-react";
 
 const links = [
   { to: "/", label: "Home" },
@@ -55,22 +50,24 @@ export default function Navbar() {
           ))}
         </div>
         <div className="flex items-center gap-2">
-          <SignedOut>
-            <SignInButton mode="modal">
-              <button
-                onMouseEnter={hover}
-                onClick={click}
-                className="px-4 py-2 text-sm rounded-full border border-white/10 bg-white/5 text-white/80 hover:text-white hover:bg-white/10"
-              >
-                Login
-              </button>
-            </SignInButton>
-          </SignedOut>
-          <SignedIn>
-            <UserButton
-              appearance={{ elements: { userButtonAvatarBox: "shadow-glow" } }}
-            />
-          </SignedIn>
+          {Boolean((import.meta as any).env.VITE_CLERK_PUBLISHABLE_KEY) ? (
+            <>
+              <SignedOut>
+                <SignInButton mode="modal">
+                  <button
+                    onMouseEnter={hover}
+                    onClick={click}
+                    className="px-4 py-2 text-sm rounded-full border border-white/10 bg-white/5 text-white/80 hover:text-white hover:bg-white/10"
+                  >
+                    Login
+                  </button>
+                </SignInButton>
+              </SignedOut>
+              <SignedIn>
+                <UserButton appearance={{ elements: { userButtonAvatarBox: "shadow-glow" } }} />
+              </SignedIn>
+            </>
+          ) : null}
           <a
             href="/input"
             onMouseEnter={hover}
