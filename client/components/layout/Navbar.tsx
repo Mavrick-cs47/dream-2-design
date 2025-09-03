@@ -40,14 +40,14 @@ export default function Navbar() {
           ))}
         </div>
         <div className="flex items-center gap-2">
-          <a
-            href={location.pathname === "/auth" ? "/" : "/auth"}
-            onMouseEnter={hover}
-            onClick={click}
-            className="px-4 py-2 text-sm rounded-full border border-white/10 bg-white/5 text-white/80 hover:text-white hover:bg-white/10"
-          >
-            {location.pathname === "/auth" ? "Back" : "Login"}
-          </a>
+          <SignedOut>
+            <SignInButton mode="modal">
+              <button onMouseEnter={hover} onClick={click} className="px-4 py-2 text-sm rounded-full border border-white/10 bg-white/5 text-white/80 hover:text-white hover:bg-white/10">Login</button>
+            </SignInButton>
+          </SignedOut>
+          <SignedIn>
+            <UserButton appearance={{ elements: { userButtonAvatarBox: "shadow-glow" } }} />
+          </SignedIn>
           <a
             href="/input"
             onMouseEnter={hover}
