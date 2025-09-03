@@ -5,12 +5,67 @@ export interface ImageGenResult {
 }
 
 function buildPrompt(dreamText: string): string {
+  const t = (dreamText || "").trim();
+  const lower = t.toLowerCase();
+
+  const settings = [
+    "forest","city","street","classroom","school","beach","ocean","desert","mountain","cave","library","space","temple","castle","island","garden","river","room","house","apartment","rooftop","market","train","subway","bridge","cemetery","church","mosque","palace","lab","museum"
+  ];
+  const times = ["dawn","sunrise","morning","noon","afternoon","sunset","twilight","evening","night","midnight"];
+  const weathers = ["rain","snow","storm","fog","mist","wind","breeze","clear sky","cloudy","thunder"];
+  const emotions = ["joy","happy","calm","peace","serene","fear","scary","anxious","anxiety","mystery","wonder","lonely","love"];
+  const subjects = [
+    "man","woman","boy","girl","child","friend","friends","people","crowd","teacher","professor","stranger","monster","creature","animal","bird","cat","dog","dragon","robot","ghost"
+  ];
+  const colors = ["red","orange","yellow","green","blue","indigo","violet","purple","pink","gold","silver","black","white","neon"];
+  const actions = ["walking","running","flying","swimming","falling","chased","chasing","looking","waiting","crying","smiling","sitting","standing","dancing"];
+
+  function pick(words: string[]) {
+    return words.filter((w) => lower.includes(w));
+  }
+
+  const found = {
+    settings: pick(settings),
+    times: pick(times),
+    weathers: pick(weathers),
+    emotions: pick(emotions),
+    subjects: pick(subjects),
+    colors: pick(colors),
+    actions: pick(actions),
+  };
+
+  // Required elements list for higher fidelity
+  const required: string[] = [];
+  if (found.settings.length) required.push(`setting: ${found.settings.join(", ")}`);
+  if (found.times.length) required.push(`time of day: ${found.times.join(", ")}`);
+  if (found.weathers.length) required.push(`weather: ${found.weathers.join(", ")}`);
+  if (found.subjects.length) required.push(`subjects: ${found.subjects.join(", ")}`);
+  if (found.actions.length) required.push(`key actions: ${found.actions.join(", ")}`);
+  if (found.colors.length) required.push(`dominant colors: ${found.colors.join(", ")}`);
+  if (found.emotions.length) required.push(`mood: ${found.emotions.join(", ")}`);
+
+  const guidance = [
+    "Accurately depict ONLY the elements described.",
+    "Do not add extra people or objects not mentioned.",
+    "Preserve the composition implied by the text.",
+    "High fidelity to nouns, places, and actions.",
+    "Photographic realism where appropriate; lightly dreamy lighting.",
+  ].join(" ");
+
+  const negative = [
+    "low quality, lowres, text, watermark, extra limbs, extra people, artifacts, oversaturated, unrealistic additions",
+  ].join(", ");
+
+  const reqLine = required.length ? `Required elements: ${required.join("; ")}.` : "";
+
   return (
-    `Generate a surreal, cinematic artwork of the following dream scene:\n\n` +
-    `Dream: '${dreamText}'\n\n` +
-    `Style: Futuristic, fantasy, dreamlike, ultra-detailed, glowing lights, magical atmosphere.\n` +
-    `Lighting: Soft ethereal glow with neon highlights.\n` +
-    `Camera: Wide angle perspective, cinematic composition, high resolution.`
+    `Create a highly faithful image for the described dream.\n` +
+    `${reqLine}\n` +
+    `Description: ${t}\n` +
+    `Style: cinematic, detailed, coherent scene, consistent perspective.\n` +
+    `Lighting: match the time-of-day and mood from the description.\n` +
+    `${guidance}\n` +
+    `Negative prompt: ${negative}`
   );
 }
 
