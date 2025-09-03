@@ -34,7 +34,9 @@ function splitIntoScenes(text: string): string[] {
   return scenes;
 }
 
-export async function generateDreamStory(dreamText: string): Promise<{ success: boolean; storyImages: string[]; error?: string }> {
+export async function generateDreamStory(
+  dreamText: string,
+): Promise<{ success: boolean; storyImages: string[]; error?: string }> {
   try {
     const scenes = splitIntoScenes(dreamText);
     const urls: string[] = [];
@@ -53,6 +55,10 @@ export async function generateDreamStory(dreamText: string): Promise<{ success: 
     }
     return { success: true, storyImages: urls };
   } catch (e) {
-    return { success: false, storyImages: [], error: "Failed to generate story" };
+    return {
+      success: false,
+      storyImages: [],
+      error: "Failed to generate story",
+    };
   }
 }

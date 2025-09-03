@@ -14,7 +14,9 @@ function buildPrompt(dreamText: string): string {
   );
 }
 
-export async function generateDreamImage(dreamText: string): Promise<ImageGenResult> {
+export async function generateDreamImage(
+  dreamText: string,
+): Promise<ImageGenResult> {
   if (!dreamText || !dreamText.trim()) {
     return { success: false, error: "Dream text required" };
   }
@@ -25,29 +27,34 @@ export async function generateDreamImage(dreamText: string): Promise<ImageGenRes
 
   // Demo or missing key -> graceful fallback
   if (!apiKey) {
-    const seed = Math.abs([...dreamText].reduce((a,c)=>a+c.charCodeAt(0),0));
+    const seed = Math.abs(
+      [...dreamText].reduce((a, c) => a + c.charCodeAt(0), 0),
+    );
     const url = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=1280&height=720&nologo=true&seed=${seed}`;
     return { success: true, imageURL: url };
   }
 
   try {
     if (provider === "stability") {
-      const resp = await fetch("https://api.stability.ai/v1/generation/stable-diffusion-xl-1024-v1-0/text-to-image", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${apiKey}`,
-          "Content-Type": "application/json",
-          Accept: "application/json",
+      const resp = await fetch(
+        "https://api.stability.ai/v1/generation/stable-diffusion-xl-1024-v1-0/text-to-image",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${apiKey}`,
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify({
+            cfg_scale: 7,
+            height: 768,
+            width: 1344,
+            steps: 30,
+            samples: 1,
+            text_prompts: [{ text: prompt, weight: 1 }],
+          }),
         },
-        body: JSON.stringify({
-          cfg_scale: 7,
-          height: 768,
-          width: 1344,
-          steps: 30,
-          samples: 1,
-          text_prompts: [{ text: prompt, weight: 1 }],
-        }),
-      });
+      );
       if (!resp.ok) throw new Error(`Stability status ${resp.status}`);
       const data: any = await resp.json();
       const b64 = data?.artifacts?.[0]?.base64;
@@ -63,7 +70,11 @@ export async function generateDreamImage(dreamText: string): Promise<ImageGenRes
           Authorization: `Bearer ${apiKey}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ model: "gpt-image-1", prompt, size: "1024x1024" }),
+        body: JSON.stringify({
+          model: "gpt-image-1",
+          prompt,
+          size: "1024x1024",
+        }),
       });
       if (!resp.ok) throw new Error(`OpenAI status ${resp.status}`);
       const data: any = await resp.json();
@@ -74,12 +85,15 @@ export async function generateDreamImage(dreamText: string): Promise<ImageGenRes
 
     if (provider === "replicate") {
       const version = process.env.REPLICATE_MODEL_VERSION || "";
-      const model = process.env.REPLICATE_MODEL || "black-forest-labs/flux-schnell";
+      const model =
+        process.env.REPLICATE_MODEL || "black-forest-labs/flux-schnell";
       const endpoint = version
         ? "https://api.replicate.com/v1/predictions"
         : `https://api.replicate.com/v1/models/${model}/predictions`;
 
-      const body = version ? { version, input: { prompt } } : { input: { prompt } };
+      const body = version
+        ? { version, input: { prompt } }
+        : { input: { prompt } };
 
       const resp = await fetch(endpoint, {
         method: "POST",
@@ -99,7 +113,9 @@ export async function generateDreamImage(dreamText: string): Promise<ImageGenRes
 
     return { success: false, error: "Unsupported provider" };
   } catch (e) {
-    const seed = Math.abs([...dreamText].reduce((a,c)=>a+c.charCodeAt(0),0));
+    const seed = Math.abs(
+      [...dreamText].reduce((a, c) => a + c.charCodeAt(0), 0),
+    );
     const url = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=1280&height=720&nologo=true&seed=${seed}`;
     return { success: true, imageURL: url };
   }

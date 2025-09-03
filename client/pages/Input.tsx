@@ -5,14 +5,21 @@ import DreamStoryViewer from "@/components/story/DreamStoryViewer";
 export default function InputPage() {
   const [text, setText] = useState("");
   const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState<null | { summary: string; imageUrl: string; emotions: Record<string, number>; storyImages?: string[] }>(null);
+  const [result, setResult] = useState<null | {
+    summary: string;
+    imageUrl: string;
+    emotions: Record<string, number>;
+    storyImages?: string[];
+  }>(null);
 
   return (
     <Layout>
       <div className="max-w-3xl mx-auto space-y-6">
         <div className="glass-card p-6 md:p-8">
           <h1 className="text-2xl font-bold mb-2">Describe Your Dream</h1>
-          <p className="text-white/70 mb-4">Type your dream. We will analyze and visualize it using AI.</p>
+          <p className="text-white/70 mb-4">
+            Type your dream. We will analyze and visualize it using AI.
+          </p>
           <textarea
             value={text}
             onChange={(e) => setText(e.target.value)}
@@ -36,7 +43,11 @@ export default function InputPage() {
                     body: JSON.stringify({ text }),
                   });
                   const data = await res.json();
-                  const summary = data.title || data.summary || text.slice(0, 80) || "Your dream preview";
+                  const summary =
+                    data.title ||
+                    data.summary ||
+                    text.slice(0, 80) ||
+                    "Your dream preview";
                   let imageUrl = data.imageUrl as string | undefined;
                   try {
                     const imgRes = await fetch(`/api/dream/render`, {
@@ -63,10 +74,19 @@ export default function InputPage() {
                     const sj = await storyRes.json();
                     storyImages = sj.storyImages;
                   } catch {}
-                  setResult({ summary, imageUrl: imageUrl || "/placeholder.svg", emotions: data.emotions || {}, storyImages });
+                  setResult({
+                    summary,
+                    imageUrl: imageUrl || "/placeholder.svg",
+                    emotions: data.emotions || {},
+                    storyImages,
+                  });
                 } catch (e) {
                   console.error(e);
-                  setResult({ summary: text.slice(0, 80) || "Your dream preview", imageUrl: "/placeholder.svg", emotions: {} });
+                  setResult({
+                    summary: text.slice(0, 80) || "Your dream preview",
+                    imageUrl: "/placeholder.svg",
+                    emotions: {},
+                  });
                 } finally {
                   setLoading(false);
                 }
@@ -80,7 +100,10 @@ export default function InputPage() {
 
         {loading && (
           <div className="glass-card p-6 flex items-center gap-4">
-            <Spinner /> <span className="text-white/80">AI is processing your dream...</span>
+            <Spinner />{" "}
+            <span className="text-white/80">
+              AI is processing your dream...
+            </span>
           </div>
         )}
 
@@ -88,13 +111,29 @@ export default function InputPage() {
           <div className="glass-card p-6 md:p-8">
             <h2 className="text-xl font-semibold mb-2">Preview</h2>
             <p className="text-white/70 mb-4">{result.summary}</p>
-            <img src={result.imageUrl} onError={(e)=>{(e.currentTarget as HTMLImageElement).src='/placeholder.svg'}} alt="Dream visualization" className="w-full aspect-video object-cover rounded-xl border border-white/10" />
+            <img
+              src={result.imageUrl}
+              onError={(e) => {
+                (e.currentTarget as HTMLImageElement).src = "/placeholder.svg";
+              }}
+              alt="Dream visualization"
+              className="w-full aspect-video object-cover rounded-xl border border-white/10"
+            />
             <div className="mt-4 grid grid-cols-2 sm:grid-cols-4 gap-2">
               {Object.entries(result.emotions).map(([k, v]) => (
-                <div key={k} className="rounded-lg bg-white/5 border border-white/10 p-3 text-sm">
-                  <div className="flex justify-between"><span className="text-white/70">{k}</span><span>{Math.round(v * 100)}%</span></div>
+                <div
+                  key={k}
+                  className="rounded-lg bg-white/5 border border-white/10 p-3 text-sm"
+                >
+                  <div className="flex justify-between">
+                    <span className="text-white/70">{k}</span>
+                    <span>{Math.round(v * 100)}%</span>
+                  </div>
                   <div className="h-1 rounded bg-white/10 mt-2">
-                    <div className="h-1 rounded bg-brand-cyan" style={{ width: `${v * 100}%` }} />
+                    <div
+                      className="h-1 rounded bg-brand-cyan"
+                      style={{ width: `${v * 100}%` }}
+                    />
                   </div>
                 </div>
               ))}
@@ -113,8 +152,25 @@ export default function InputPage() {
 function Spinner() {
   return (
     <svg className="animate-spin h-6 w-6 text-brand-cyan" viewBox="0 0 50 50">
-      <circle className="opacity-20" cx="25" cy="25" r="20" stroke="currentColor" strokeWidth="5" fill="none" />
-      <circle cx="25" cy="25" r="20" stroke="currentColor" strokeWidth="5" fill="none" strokeDasharray="100" strokeDashoffset="75" />
+      <circle
+        className="opacity-20"
+        cx="25"
+        cy="25"
+        r="20"
+        stroke="currentColor"
+        strokeWidth="5"
+        fill="none"
+      />
+      <circle
+        cx="25"
+        cy="25"
+        r="20"
+        stroke="currentColor"
+        strokeWidth="5"
+        fill="none"
+        strokeDasharray="100"
+        strokeDashoffset="75"
+      />
     </svg>
   );
 }

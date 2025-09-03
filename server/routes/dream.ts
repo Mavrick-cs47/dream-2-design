@@ -11,13 +11,36 @@ const auth = DEMO ? (_req: any, _res: any, next: any) => next() : requireAuth;
 
 function extractKeywords(text: string): string[] {
   const words = text.toLowerCase().match(/[a-zA-Z']+/g) || [];
-  const stop = new Set(["the","and","a","to","of","in","it","i","was","that","with","on","for","as","is","at","my","we","you"]);
+  const stop = new Set([
+    "the",
+    "and",
+    "a",
+    "to",
+    "of",
+    "in",
+    "it",
+    "i",
+    "was",
+    "that",
+    "with",
+    "on",
+    "for",
+    "as",
+    "is",
+    "at",
+    "my",
+    "we",
+    "you",
+  ]);
   const freq = new Map<string, number>();
   for (const w of words) {
     if (stop.has(w) || w.length < 3) continue;
     freq.set(w, (freq.get(w) || 0) + 1);
   }
-  return Array.from(freq.entries()).sort((a,b)=>b[1]-a[1]).slice(0, 12).map(([w])=>w);
+  return Array.from(freq.entries())
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 12)
+    .map(([w]) => w);
 }
 
 function analyzeEmotions(text: string): Record<string, number> {
@@ -27,20 +50,85 @@ function analyzeEmotions(text: string): Record<string, number> {
   // Expanded lightweight lexicon with common dream words
   const lex: Record<string, string[]> = {
     joy: [
-      "happy","joy","love","wonderful","delight","sparkle","glow","light","flying","beautiful","calm","serene","peace","magic","magical","shimmer","glitter","neon","colorful",
+      "happy",
+      "joy",
+      "love",
+      "wonderful",
+      "delight",
+      "sparkle",
+      "glow",
+      "light",
+      "flying",
+      "beautiful",
+      "calm",
+      "serene",
+      "peace",
+      "magic",
+      "magical",
+      "shimmer",
+      "glitter",
+      "neon",
+      "colorful",
     ],
     fear: [
-      "fear","afraid","scary","dark","chased","monster","ghost","falling","alone","trapped","danger","scream","shadowy","nightmare",
+      "fear",
+      "afraid",
+      "scary",
+      "dark",
+      "chased",
+      "monster",
+      "ghost",
+      "falling",
+      "alone",
+      "trapped",
+      "danger",
+      "scream",
+      "shadowy",
+      "nightmare",
     ],
     mystery: [
-      "mystery","unknown","fog","shadow","secret","maze","portal","mirror","moon","moonlight","forest","ocean","space","strange","weird","uncanny","glass",
+      "mystery",
+      "unknown",
+      "fog",
+      "shadow",
+      "secret",
+      "maze",
+      "portal",
+      "mirror",
+      "moon",
+      "moonlight",
+      "forest",
+      "ocean",
+      "space",
+      "strange",
+      "weird",
+      "uncanny",
+      "glass",
     ],
     anxiety: [
-      "anxious","stress","worry","nervous","late","exam","lost","missing","broken","forget","forgot","deadline","pressure","crowded",
+      "anxious",
+      "stress",
+      "worry",
+      "nervous",
+      "late",
+      "exam",
+      "lost",
+      "missing",
+      "broken",
+      "forget",
+      "forgot",
+      "deadline",
+      "pressure",
+      "crowded",
     ],
   };
 
-  const counts: Record<string, number> = { joy: 0, fear: 0, mystery: 0, anxiety: 0 };
+  const counts: Record<string, number> = {
+    joy: 0,
+    fear: 0,
+    mystery: 0,
+    anxiety: 0,
+  };
   for (const [emo, words] of Object.entries(lex)) {
     for (const w of words) {
       // count occurrences for weight rather than just presence
@@ -53,19 +141,24 @@ function analyzeEmotions(text: string): Record<string, number> {
   // Heuristic boosts from co-occurrence phrases
   if (/moon|moonlight|night|stars?/.test(t)) counts.mystery += 2;
   if (/glass|mirror|portal|maze/.test(t)) counts.mystery += 1;
-  if (/glow|sparkle|shimmer|colorful|neon|beautiful|calm/.test(t)) counts.joy += 2;
+  if (/glow|sparkle|shimmer|colorful|neon|beautiful|calm/.test(t))
+    counts.joy += 2;
   if (/chase|chased|falling|alone|dark/.test(t)) counts.fear += 2;
   if (/late|exam|lost|deadline|forgot/.test(t)) counts.anxiety += 2;
 
   let total = Object.values(counts).reduce((a, b) => a + b, 0);
   if (total === 0) {
     // Default balanced distribution leaning to mystery for neutral dreams
-    counts.mystery = 4; counts.joy = 3; counts.anxiety = 2; counts.fear = 2;
+    counts.mystery = 4;
+    counts.joy = 3;
+    counts.anxiety = 2;
+    counts.fear = 2;
     total = 11;
   }
 
   const scores: Record<string, number> = {};
-  for (const [k, v] of Object.entries(counts)) scores[k] = Math.min(1, v / total);
+  for (const [k, v] of Object.entries(counts))
+    scores[k] = Math.min(1, v / total);
   return scores;
 }
 
@@ -76,10 +169,17 @@ router.post("/analyze", limiter, auth, async (req, res) => {
   const { text } = p.data;
   const keywords = extractKeywords(text);
   const emotions = analyzeEmotions(text);
-  const summary = text.split(/[.!?]/)[0]?.slice(0, 80) || keywords.slice(0,3).join(", ");
+  const summary =
+    text.split(/[.!?]/)[0]?.slice(0, 80) || keywords.slice(0, 3).join(", ");
 
   if (DEMO) {
-    return res.json({ id: `demo-${Date.now()}`, title: summary, keywords, emotions, timestamp: new Date() });
+    return res.json({
+      id: `demo-${Date.now()}`,
+      title: summary,
+      keywords,
+      emotions,
+      timestamp: new Date(),
+    });
   }
 
   const repos = await getRepos();
@@ -92,7 +192,13 @@ router.post("/analyze", limiter, auth, async (req, res) => {
     timestamp: new Date(),
     analysisJSON: { keywords, emotions },
   });
-  return res.json({ id: dream.id, title: summary, keywords, emotions, timestamp: dream.timestamp });
+  return res.json({
+    id: dream.id,
+    title: summary,
+    keywords,
+    emotions,
+    timestamp: dream.timestamp,
+  });
 });
 
 router.get("/list", auth, async (req, res) => {
@@ -105,7 +211,10 @@ router.get("/list", auth, async (req, res) => {
 router.get("/:id", auth, async (req, res) => {
   if (DEMO) return res.status(404).json({ error: "Not found in demo mode" });
   const repos = await getRepos();
-  const d = await repos.dreams.getByIdOwned((req as any).user.sub, req.params.id);
+  const d = await repos.dreams.getByIdOwned(
+    (req as any).user.sub,
+    req.params.id,
+  );
   if (!d) return res.status(404).json({ error: "Not found" });
   return res.json(d);
 });
@@ -114,16 +223,25 @@ router.get("/render/:id", limiter, auth, async (req, res) => {
   const imageURL = process.env.DEFAULT_PLACEHOLDER_IMAGE || "/placeholder.svg";
   if (DEMO) return res.json({ imageURL, updated: false });
   const repos = await getRepos();
-  const d = await repos.dreams.getByIdOwned((req as any).user.sub, req.params.id);
+  const d = await repos.dreams.getByIdOwned(
+    (req as any).user.sub,
+    req.params.id,
+  );
   if (!d) return res.status(404).json({ error: "Not found" });
   const updated = await repos.dreams.update(d.id, { imageURL });
   return res.json({ imageURL, updated: !!updated });
 });
 
 router.post("/render", limiter, auth, async (req, res) => {
-  const schema = z.object({ dreamText: z.string().min(5), id: z.string().optional() });
+  const schema = z.object({
+    dreamText: z.string().min(5),
+    id: z.string().optional(),
+  });
   const p = schema.safeParse(req.body);
-  if (!p.success) return res.status(400).json({ success: false, error: "Dream text required" });
+  if (!p.success)
+    return res
+      .status(400)
+      .json({ success: false, error: "Dream text required" });
 
   // Demo fallback or missing API key is handled inside service
   try {
@@ -137,7 +255,9 @@ router.post("/render", limiter, auth, async (req, res) => {
     }
     return res.json({ success: true, imageURL: result.imageURL });
   } catch (e) {
-    return res.status(500).json({ success: false, error: "Image generation failed" });
+    return res
+      .status(500)
+      .json({ success: false, error: "Image generation failed" });
   }
 });
 
@@ -150,17 +270,28 @@ router.post("/remix/:id", limiter, auth, async (req, res) => {
     const text = `Remix: ${p.data.prompt}`;
     const keywords = extractKeywords(text);
     const emotions = analyzeEmotions(text);
-    const summary = text.split(/[.!?]/)[0]?.slice(0, 80) || keywords.slice(0,3).join(", ");
-    return res.json({ id: `demo-${Date.now()}`, title: summary, keywords, emotions, timestamp: new Date() });
+    const summary =
+      text.split(/[.!?]/)[0]?.slice(0, 80) || keywords.slice(0, 3).join(", ");
+    return res.json({
+      id: `demo-${Date.now()}`,
+      title: summary,
+      keywords,
+      emotions,
+      timestamp: new Date(),
+    });
   }
 
   const repos = await getRepos();
-  const base = await repos.dreams.getByIdOwned((req as any).user.sub, req.params.id);
+  const base = await repos.dreams.getByIdOwned(
+    (req as any).user.sub,
+    req.params.id,
+  );
   if (!base) return res.status(404).json({ error: "Not found" });
   const text = `${base.text}\nRemix: ${p.data.prompt}`;
   const keywords = extractKeywords(text);
   const emotions = analyzeEmotions(text);
-  const summary = text.split(/[.!?]/)[0]?.slice(0, 80) || keywords.slice(0,3).join(", ");
+  const summary =
+    text.split(/[.!?]/)[0]?.slice(0, 80) || keywords.slice(0, 3).join(", ");
   const dream = await repos.dreams.create({
     userId: base.userId,
     text,
@@ -168,31 +299,59 @@ router.post("/remix/:id", limiter, auth, async (req, res) => {
     keywords,
     emotions,
     timestamp: new Date(),
-    analysisJSON: { baseId: base.id, remixPrompt: p.data.prompt, keywords, emotions },
+    analysisJSON: {
+      baseId: base.id,
+      remixPrompt: p.data.prompt,
+      keywords,
+      emotions,
+    },
   });
-  return res.json({ id: dream.id, title: summary, keywords, emotions, timestamp: dream.timestamp });
+  return res.json({
+    id: dream.id,
+    title: summary,
+    keywords,
+    emotions,
+    timestamp: dream.timestamp,
+  });
 });
 
 router.post("/story", limiter, auth, async (req, res) => {
-  const schema = z.object({ dreamText: z.string().min(5), id: z.string().optional() });
+  const schema = z.object({
+    dreamText: z.string().min(5),
+    id: z.string().optional(),
+  });
   const p = schema.safeParse(req.body);
-  if (!p.success) return res.status(400).json({ success: false, error: "Dream text required" });
+  if (!p.success)
+    return res
+      .status(400)
+      .json({ success: false, error: "Dream text required" });
   try {
     const { generateDreamStory } = await import("../services/story");
     const result = await generateDreamStory(p.data.dreamText);
     if (!result.success) return res.status(500).json(result);
     if (!DEMO && p.data.id) {
       const repos = await getRepos();
-      await repos.dreams.update(p.data.id, { analysisJSON: { storyImages: result.storyImages } as any });
+      await repos.dreams.update(p.data.id, {
+        analysisJSON: { storyImages: result.storyImages } as any,
+      });
     }
     return res.json({ success: true, storyImages: result.storyImages });
   } catch (e) {
-    return res.status(500).json({ success: false, error: "Failed to generate story" });
+    return res
+      .status(500)
+      .json({ success: false, error: "Failed to generate story" });
   }
 });
 
 router.get("/audio/:id", auth, async (_req, res) => {
-  return res.status(202).json({ audioUrl: null, message: DEMO ? "Demo mode: TTS disabled" : "Text-to-Speech not configured yet" });
+  return res
+    .status(202)
+    .json({
+      audioUrl: null,
+      message: DEMO
+        ? "Demo mode: TTS disabled"
+        : "Text-to-Speech not configured yet",
+    });
 });
 
 export default router;

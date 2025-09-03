@@ -29,10 +29,15 @@ const App = () => {
     }
   }
 
-  const clerkKey = (import.meta as any).env.VITE_CLERK_PUBLISHABLE_KEY as string | undefined;
+  const clerkKey = (import.meta as any).env.VITE_CLERK_PUBLISHABLE_KEY as
+    | string
+    | undefined;
 
   return (
-    <ClerkProvider publishableKey={clerkKey} navigate={(to) => window.history.pushState({}, "", to)}>
+    <ClerkProvider
+      publishableKey={clerkKey}
+      navigate={(to) => window.history.pushState({}, "", to)}
+    >
       <QueryClientProvider client={queryClient}>
         <TooltipProvider>
           <Toaster />
@@ -44,7 +49,10 @@ const App = () => {
               <Route path="/journal" element={<Journal />} />
               <Route path="/visualizer" element={<Visualizer />} />
               <Route path="/sign-in" element={<SignInPage />} />
-              <Route path="/auth" element={<Navigate to="/sign-in" replace />} />
+              <Route
+                path="/auth"
+                element={<Navigate to="/sign-in" replace />}
+              />
               <Route path="/sign-up" element={<SignUpPage />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />

@@ -48,34 +48,51 @@ export default function Journal() {
     };
   }, []);
 
-  const empty = useMemo(() => !loading && !error && dreams.length === 0, [loading, error, dreams]);
+  const empty = useMemo(
+    () => !loading && !error && dreams.length === 0,
+    [loading, error, dreams],
+  );
 
   return (
     <Layout>
       <div className="max-w-5xl mx-auto space-y-6">
         <div className="glass-card p-6 md:p-8">
           <h1 className="text-2xl font-bold">Dream Journal</h1>
-          <p className="text-white/70 mt-2">Only dreams created after your signup are shown.</p>
+          <p className="text-white/70 mt-2">
+            Only dreams created after your signup are shown.
+          </p>
 
           {loading && <div className="mt-6 text-white/70">Loading…</div>}
           {error && <div className="mt-6 text-red-400">{error}</div>}
-          {empty && <div className="mt-6 text-white/60">No dreams yet after your signup.</div>}
+          {empty && (
+            <div className="mt-6 text-white/60">
+              No dreams yet after your signup.
+            </div>
+          )}
 
           {!loading && !error && dreams.length > 0 && (
             <div className="mt-6 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {dreams.map((d) => (
-                <div key={d.id} className="rounded-xl border border-white/10 bg-white/5 overflow-hidden">
+                <div
+                  key={d.id}
+                  className="rounded-xl border border-white/10 bg-white/5 overflow-hidden"
+                >
                   <img
                     src={d.imageURL || "/placeholder.svg"}
                     alt={d.summary || "Dream image"}
                     className="w-full aspect-video object-cover"
                     onError={(e) => {
-                      (e.currentTarget as HTMLImageElement).src = "/placeholder.svg";
+                      (e.currentTarget as HTMLImageElement).src =
+                        "/placeholder.svg";
                     }}
                   />
                   <div className="p-3">
-                    <div className="text-sm font-semibold line-clamp-1">{d.summary || "Dream"}</div>
-                    <div className="text-xs text-white/60">{new Date(d.timestamp).toLocaleString()}</div>
+                    <div className="text-sm font-semibold line-clamp-1">
+                      {d.summary || "Dream"}
+                    </div>
+                    <div className="text-xs text-white/60">
+                      {new Date(d.timestamp).toLocaleString()}
+                    </div>
                   </div>
                 </div>
               ))}
