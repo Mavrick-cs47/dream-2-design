@@ -102,20 +102,44 @@ function Spinner() {
   );
 }
 
-function VoiceRecorder() {
+function VoiceRecorder({ onText }: { onText?: (text: string) => void }) {
   const [recording, setRecording] = useState(false);
   const [duration, setDuration] = useState(0);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<BlobPart[]>([]);
   const timerRef = useRef<number | null>(null);
+  const recogRef = useRef<any>(null);
 
   useEffect(() => {
     return () => {
       if (timerRef.current) window.clearInterval(timerRef.current);
+      if (recogRef.current) try { recogRef.current.stop(); } catch {}
     };
   }, []);
 
   const start = async () => {
+    // Web Speech API for transcription (Chrome/Brave)
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (SpeechRecognition) {
+      const recog = new SpeechRecognition();
+      recogRef.current = recog;
+      recog.lang = "en-US";
+      recog.continuous = true;
+      recog.interimResults = true;
+      let finalText = "";
+      recog.onresult = (e: any) => {
+        for (let i = e.resultIndex; i < e.results.length; i++) {
+          const transcript = e.results[i][0].transcript;
+          if (e.results[i].isFinal) {
+            finalText += transcript + " ";
+            onText?.(finalText.trim());
+          }
+        }
+      };
+      try { recog.start(); } catch {}
+    }
+
+    // Start MediaRecorder to acquire mic permission and allow future upload
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
     const mr = new MediaRecorder(stream);
     mediaRecorderRef.current = mr;
@@ -125,9 +149,6 @@ function VoiceRecorder() {
     mr.ondataavailable = (e) => chunksRef.current.push(e.data);
     mr.onstop = () => {
       if (timerRef.current) window.clearInterval(timerRef.current);
-      const blob = new Blob(chunksRef.current, { type: "audio/webm" });
-      // Placeholder: attach to request if needed in the future
-      void blob;
       stream.getTracks().forEach((t) => t.stop());
     };
     mr.start();
@@ -136,6 +157,7 @@ function VoiceRecorder() {
 
   const stop = () => {
     mediaRecorderRef.current?.stop();
+    try { recogRef.current?.stop(); } catch {}
     setRecording(false);
   };
 
