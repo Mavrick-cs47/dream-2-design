@@ -88,19 +88,24 @@ export default function InputPage() {
                       .split(/[.!?]+/)
                       .map((s) => s.trim())
                       .filter(Boolean);
-                    const scenes = Array.from({ length: 6 }, (_, i) =>
-                      sentences[i] || [
-                        "A quiet introduction to the dream world",
-                        "A hint of wonder appears in the distance",
-                        "The scene builds with motion and color",
-                        "The dream reaches a surreal climax",
-                        "A moment of clarity and reflection",
-                        "A gentle resolution as the dream fades",
-                      ][i]
+                    const scenes = Array.from(
+                      { length: 6 },
+                      (_, i) =>
+                        sentences[i] ||
+                        [
+                          "A quiet introduction to the dream world",
+                          "A hint of wonder appears in the distance",
+                          "The scene builds with motion and color",
+                          "The dream reaches a surreal climax",
+                          "A moment of clarity and reflection",
+                          "A gentle resolution as the dream fades",
+                        ][i],
                     );
                     storyImages = scenes.map((focus, i) => {
                       const p = `Scene ${i + 1}: ${focus}. Create a faithful, cinematic image matching the dream.`;
-                      const seed = Math.abs([...p].reduce((a, c) => a + c.charCodeAt(0), 0));
+                      const seed = Math.abs(
+                        [...p].reduce((a, c) => a + c.charCodeAt(0), 0),
+                      );
                       return `https://image.pollinations.ai/prompt/${encodeURIComponent(p)}?width=1024&height=576&nologo=true&seed=${seed}`;
                     });
                   }

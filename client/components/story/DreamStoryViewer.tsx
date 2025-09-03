@@ -24,7 +24,10 @@ export default function DreamStoryViewer({ images }: { images: string[] }) {
     <div className="mt-6">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
         {imgs.slice(0, 6).map((src, idx) => (
-          <div key={idx} className="relative overflow-hidden rounded-xl border border-white/10 bg-black/30 aspect-video">
+          <div
+            key={idx}
+            className="relative overflow-hidden rounded-xl border border-white/10 bg-black/30 aspect-video"
+          >
             <img
               src={src}
               alt={`Dream scene ${idx + 1}`}
