@@ -63,7 +63,9 @@ export default function InputPage() {
                   } catch {}
                   // Client fallback to Pollinations if server didn't return an image
                   if (!imageUrl) {
-                    const seed = Math.abs([...text].reduce((a, c) => a + c.charCodeAt(0), 0));
+                    const seed = Math.abs(
+                      [...text].reduce((a, c) => a + c.charCodeAt(0), 0),
+                    );
                     const prompt = `Create a faithful image of this dream: ${text}. Cinematic, detailed, coherent scene.`;
                     imageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=1344&height=768&nologo=true&seed=${seed}`;
                   }

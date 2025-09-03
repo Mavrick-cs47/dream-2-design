@@ -7,9 +7,7 @@ import {
   SignInButton,
 } from "@clerk/clerk-react";
 
-const links = [
-  { to: "/", label: "Home" },
-];
+const links = [{ to: "/", label: "Home" }];
 
 export default function Navbar() {
   const { hover, click } = useSfx();
