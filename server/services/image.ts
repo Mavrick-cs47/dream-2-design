@@ -9,16 +9,132 @@ function buildPrompt(dreamText: string): string {
   const lower = t.toLowerCase();
 
   const settings = [
-    "forest","city","street","classroom","school","beach","ocean","desert","mountain","cave","library","space","temple","castle","island","garden","river","room","house","apartment","rooftop","market","train","subway","bridge","cemetery","church","mosque","palace","lab","museum"
+    "forest",
+    "city",
+    "street",
+    "classroom",
+    "school",
+    "beach",
+    "ocean",
+    "desert",
+    "mountain",
+    "cave",
+    "library",
+    "space",
+    "temple",
+    "castle",
+    "island",
+    "garden",
+    "river",
+    "room",
+    "house",
+    "apartment",
+    "rooftop",
+    "market",
+    "train",
+    "subway",
+    "bridge",
+    "cemetery",
+    "church",
+    "mosque",
+    "palace",
+    "lab",
+    "museum",
   ];
-  const times = ["dawn","sunrise","morning","noon","afternoon","sunset","twilight","evening","night","midnight"];
-  const weathers = ["rain","snow","storm","fog","mist","wind","breeze","clear sky","cloudy","thunder"];
-  const emotions = ["joy","happy","calm","peace","serene","fear","scary","anxious","anxiety","mystery","wonder","lonely","love"];
+  const times = [
+    "dawn",
+    "sunrise",
+    "morning",
+    "noon",
+    "afternoon",
+    "sunset",
+    "twilight",
+    "evening",
+    "night",
+    "midnight",
+  ];
+  const weathers = [
+    "rain",
+    "snow",
+    "storm",
+    "fog",
+    "mist",
+    "wind",
+    "breeze",
+    "clear sky",
+    "cloudy",
+    "thunder",
+  ];
+  const emotions = [
+    "joy",
+    "happy",
+    "calm",
+    "peace",
+    "serene",
+    "fear",
+    "scary",
+    "anxious",
+    "anxiety",
+    "mystery",
+    "wonder",
+    "lonely",
+    "love",
+  ];
   const subjects = [
-    "man","woman","boy","girl","child","friend","friends","people","crowd","teacher","professor","stranger","monster","creature","animal","bird","cat","dog","dragon","robot","ghost"
+    "man",
+    "woman",
+    "boy",
+    "girl",
+    "child",
+    "friend",
+    "friends",
+    "people",
+    "crowd",
+    "teacher",
+    "professor",
+    "stranger",
+    "monster",
+    "creature",
+    "animal",
+    "bird",
+    "cat",
+    "dog",
+    "dragon",
+    "robot",
+    "ghost",
   ];
-  const colors = ["red","orange","yellow","green","blue","indigo","violet","purple","pink","gold","silver","black","white","neon"];
-  const actions = ["walking","running","flying","swimming","falling","chased","chasing","looking","waiting","crying","smiling","sitting","standing","dancing"];
+  const colors = [
+    "red",
+    "orange",
+    "yellow",
+    "green",
+    "blue",
+    "indigo",
+    "violet",
+    "purple",
+    "pink",
+    "gold",
+    "silver",
+    "black",
+    "white",
+    "neon",
+  ];
+  const actions = [
+    "walking",
+    "running",
+    "flying",
+    "swimming",
+    "falling",
+    "chased",
+    "chasing",
+    "looking",
+    "waiting",
+    "crying",
+    "smiling",
+    "sitting",
+    "standing",
+    "dancing",
+  ];
 
   function pick(words: string[]) {
     return words.filter((w) => lower.includes(w));
@@ -36,13 +152,20 @@ function buildPrompt(dreamText: string): string {
 
   // Required elements list for higher fidelity
   const required: string[] = [];
-  if (found.settings.length) required.push(`setting: ${found.settings.join(", ")}`);
-  if (found.times.length) required.push(`time of day: ${found.times.join(", ")}`);
-  if (found.weathers.length) required.push(`weather: ${found.weathers.join(", ")}`);
-  if (found.subjects.length) required.push(`subjects: ${found.subjects.join(", ")}`);
-  if (found.actions.length) required.push(`key actions: ${found.actions.join(", ")}`);
-  if (found.colors.length) required.push(`dominant colors: ${found.colors.join(", ")}`);
-  if (found.emotions.length) required.push(`mood: ${found.emotions.join(", ")}`);
+  if (found.settings.length)
+    required.push(`setting: ${found.settings.join(", ")}`);
+  if (found.times.length)
+    required.push(`time of day: ${found.times.join(", ")}`);
+  if (found.weathers.length)
+    required.push(`weather: ${found.weathers.join(", ")}`);
+  if (found.subjects.length)
+    required.push(`subjects: ${found.subjects.join(", ")}`);
+  if (found.actions.length)
+    required.push(`key actions: ${found.actions.join(", ")}`);
+  if (found.colors.length)
+    required.push(`dominant colors: ${found.colors.join(", ")}`);
+  if (found.emotions.length)
+    required.push(`mood: ${found.emotions.join(", ")}`);
 
   const guidance = [
     "Accurately depict ONLY the elements described.",
@@ -56,7 +179,9 @@ function buildPrompt(dreamText: string): string {
     "low quality, lowres, text, watermark, extra limbs, extra people, artifacts, oversaturated, unrealistic additions",
   ].join(", ");
 
-  const reqLine = required.length ? `Required elements: ${required.join("; ")}.` : "";
+  const reqLine = required.length
+    ? `Required elements: ${required.join("; ")}.`
+    : "";
 
   return (
     `Create a highly faithful image for the described dream.\n` +
