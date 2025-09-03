@@ -6,7 +6,6 @@ const links = [
   { to: "/", label: "Home" },
   { to: "/journal", label: "Journal" },
   { to: "/visualizer", label: "Visualizer" },
-  { to: "/insights", label: "Insights" },
 ];
 
 export default function Navbar() {

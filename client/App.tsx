@@ -11,7 +11,6 @@ import Index from "./pages/Index";
 import Input from "./pages/Input";
 import Journal from "./pages/Journal";
 import Visualizer from "./pages/Visualizer";
-import Insights from "./pages/Insights";
 import SignInPage from "./pages/SignIn";
 import SignUpPage from "./pages/SignUp";
 import NotFound from "./pages/NotFound";
@@ -44,7 +43,6 @@ const App = () => {
               <Route path="/input" element={<Input />} />
               <Route path="/journal" element={<Journal />} />
               <Route path="/visualizer" element={<Visualizer />} />
-              <Route path="/insights" element={<Insights />} />
               <Route path="/sign-in" element={<SignInPage />} />
               <Route path="/auth" element={<Navigate to="/sign-in" replace />} />
               <Route path="/sign-up" element={<SignUpPage />} />

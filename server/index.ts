@@ -5,7 +5,6 @@ import passport from "passport";
 import { handleDemo } from "./routes/demo";
 import authRouter from "./routes/auth";
 import dreamRouter from "./routes/dream";
-import insightsRouter from "./routes/insights";
 
 export function createServer() {
   const app = express();
@@ -28,7 +27,6 @@ export function createServer() {
   // API Routers
   app.use("/api/auth", authRouter);
   app.use("/api/dream", dreamRouter);
-  app.use("/api/insights", insightsRouter);
 
   return app;
 }
