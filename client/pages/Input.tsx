@@ -72,7 +72,7 @@ export default function InputPage() {
           <div className="glass-card p-6 md:p-8">
             <h2 className="text-xl font-semibold mb-2">Preview</h2>
             <p className="text-white/70 mb-4">{result.summary}</p>
-            <img src={result.imageUrl} alt="Dream visualization" className="w-full aspect-video object-cover rounded-xl border border-white/10" />
+            <img src={result.imageUrl} onError={(e)=>{(e.currentTarget as HTMLImageElement).src='/placeholder.svg'}} alt="Dream visualization" className="w-full aspect-video object-cover rounded-xl border border-white/10" />
             <div className="mt-4 grid grid-cols-2 sm:grid-cols-4 gap-2">
               {Object.entries(result.emotions).map(([k, v]) => (
                 <div key={k} className="rounded-lg bg-white/5 border border-white/10 p-3 text-sm">
