@@ -117,11 +117,27 @@ export default function InputPage() {
                   });
                 } catch (e) {
                   console.error(e);
-                  setResult({
-                    summary: text.slice(0, 80) || "Your dream preview",
-                    imageUrl: "/placeholder.svg",
-                    emotions: {},
-                  });
+                  // Local fallback for summary + emotions
+                  const summary = (text.split(/[.!?]/)[0] || text).slice(0, 80) || "Your dream preview";
+                  const tokens = (text.toLowerCase().match(/[a-z']+/g) || []).map((w) => w.replace(/'+/g, ""));
+                  const lex: Record<string, string[]> = {
+                    joy: ["happy","joy","love","wonderful","delight","sparkle","glow","light","flying","beautiful","calm","serene","peace","magic","magical","shimmer","glitter","neon","colorful"],
+                    fear: ["fear","afraid","scary","dark","chased","monster","ghost","falling","alone","trapped","danger","scream","shadowy","nightmare"],
+                    mystery: ["mystery","unknown","fog","shadow","secret","maze","portal","mirror","moon","moonlight","forest","ocean","space","strange","weird","uncanny","glass"],
+                    anxiety: ["anxious","stress","worry","nervous","late","exam","lost","missing","broken","forget","forgot","deadline","pressure","crowded"],
+                  };
+                  const counts: Record<string, number> = { joy: 0, fear: 0, mystery: 0, anxiety: 0 };
+                  for (const [emo, words] of Object.entries(lex)) {
+                    for (const w of words) counts[emo] += tokens.reduce((a, t) => a + (t === w ? 1 : 0), 0);
+                  }
+                  if (/moon|night|stars?/.test(text)) counts.mystery += 2;
+                  if (/glow|shimmer|colorful|neon|beautiful|calm/.test(text)) counts.joy += 2;
+                  if (/chase|chased|falling|alone|dark/.test(text)) counts.fear += 2;
+                  if (/late|exam|lost|deadline|forgot/.test(text)) counts.anxiety += 2;
+                  let total = Object.values(counts).reduce((a,b)=>a+b,0) || 1;
+                  const emotions: Record<string, number> = {};
+                  for (const [k,v] of Object.entries(counts)) emotions[k] = Math.min(1, v/total);
+                  setResult({ summary, imageUrl: "/placeholder.svg", emotions });
                 } finally {
                   setLoading(false);
                 }
