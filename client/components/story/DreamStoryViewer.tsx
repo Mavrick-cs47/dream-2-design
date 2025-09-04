@@ -39,8 +39,8 @@ export default function DreamStoryViewer({ images }: { images: string[] }) {
           />
         </AnimatePresence>
       </div>
-      <div className="mt-3 flex items-center justify-between">
-        <div className="flex gap-2">
+      <div className="mt-3 flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div className="flex flex-wrap gap-2 justify-center">
           {imgs.map((_, idx) => (
             <button
               key={idx}
@@ -53,19 +53,19 @@ export default function DreamStoryViewer({ images }: { images: string[] }) {
         <div className="flex gap-2">
           <button
             onClick={() => setI((i - 1 + imgs.length) % imgs.length)}
-            className="px-3 py-1 rounded-full bg-white/5 border border-white/10 text-white/80"
+            className="px-2 sm:px-3 py-1 rounded-full bg-white/5 border border-white/10 text-white/80"
           >
             Back
           </button>
           <button
             onClick={() => setPlaying((p) => !p)}
-            className="px-3 py-1 rounded-full bg-brand-cyan/20 border border-brand-cyan/40 text-white"
+            className="px-2 sm:px-3 py-1 rounded-full bg-brand-cyan/20 border border-brand-cyan/40 text-white"
           >
             {playing ? "Pause" : "Play"}
           </button>
           <button
             onClick={() => setI((i + 1) % imgs.length)}
-            className="px-3 py-1 rounded-full bg-white/5 border border-white/10 text-white/80"
+            className="px-2 sm:px-3 py-1 rounded-full bg-white/5 border border-white/10 text-white/80"
           >
             Next
           </button>
