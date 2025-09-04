@@ -223,7 +223,7 @@ export default function InputPage() {
                   setResult({
                     summary,
                     imageUrl: imageUrl || "/placeholder.svg",
-                    emotions: data.emotions || {},
+                    emotions,
                     storyImages,
                   });
                 } catch (e) {
