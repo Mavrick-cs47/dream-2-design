@@ -1,4 +1,5 @@
 import { NavLink, useLocation } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import { useSfx } from "@/hooks/use-sfx";
 
 const links = [{ to: "/", label: "Home" }];
