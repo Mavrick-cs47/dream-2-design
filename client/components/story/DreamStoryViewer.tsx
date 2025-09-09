@@ -7,10 +7,11 @@ export default function DreamStoryViewer({ images }: { images: string[] }) {
   const timer = useRef<number | null>(null);
   const imgs = useMemo(() => images.filter(Boolean), [images]);
 
-  // Reset index when the images set changes
+  // Reset index when the images set changes (by value)
+  const imgsKey = useMemo(() => imgs.join("|"), [imgs]);
   useEffect(() => {
     setI(0);
-  }, [imgs.length]);
+  }, [imgsKey]);
 
   useEffect(() => {
     if (!playing || imgs.length === 0) return;
