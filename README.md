@@ -45,7 +45,7 @@ Type your dream, get a faithful AI visual and a 6‑scene slideshow story with s
 3. Build settings are read from netlify.toml:
    - Publish: dist/spa
    - Functions: netlify/functions
-   - Redirects: /api/* → Functions, and /* → /index.html for SPA
+   - Redirects: /api/_ → Functions, and /_ → /index.html for SPA
 4. Post processing: disable Asset Optimization.
 5. Deploy → Clear cache and deploy → hard refresh (Ctrl/Cmd+Shift+R).
 
