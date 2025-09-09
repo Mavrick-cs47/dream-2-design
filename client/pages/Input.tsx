@@ -224,7 +224,9 @@ export default function InputPage() {
                         `Resolution: High quality.`,
                       ].join(" ");
                       const seed = Math.abs(
-                        `${text}::scene-${i}`.split("").reduce((a, c) => a + c.charCodeAt(0), 0),
+                        `${text}::scene-${i}`
+                          .split("")
+                          .reduce((a, c) => a + c.charCodeAt(0), 0),
                       );
                       const cacheBust = Date.now() + i;
                       return `https://image.pollinations.ai/prompt/${encodeURIComponent(scenePrompt)}?width=1024&height=576&nologo=true&seed=${seed}&t=${cacheBust}`;
