@@ -178,7 +178,8 @@ export default function InputPage() {
                       [...text].reduce((a, c) => a + c.charCodeAt(0), 0),
                     );
                     const prompt = `Create a faithful image of this dream: ${text}. Cinematic, detailed, coherent scene.`;
-                    imageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=1344&height=768&nologo=true&seed=${seed}`;
+                    const cacheBust = Date.now();
+                    imageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=1344&height=768&nologo=true&seed=${seed}&t=${cacheBust}`;
                   }
                   let storyImages: string[] | undefined;
                   try {
@@ -213,11 +214,20 @@ export default function InputPage() {
                         ][i],
                     );
                     storyImages = scenes.map((focus, i) => {
-                      const p = `Scene ${i + 1}: ${focus}. Create a faithful, cinematic image matching the dream.`;
+                      const scenePrompt = [
+                        `Create a surreal cinematic artwork for Scene ${i + 1} of the dream.`,
+                        `Dream: '${text}'.`,
+                        `Scene focus: ${focus}.`,
+                        `Style: Storyboard, cinematic, fantasy, ultra-detailed, magical.`,
+                        `Lighting: Match the mood of the scene.`,
+                        `Camera: Dynamic cinematic shot, appropriate to the scene.`,
+                        `Resolution: High quality.`,
+                      ].join(" ");
                       const seed = Math.abs(
-                        [...p].reduce((a, c) => a + c.charCodeAt(0), 0),
+                        `${text}::scene-${i}`.split("").reduce((a, c) => a + c.charCodeAt(0), 0),
                       );
-                      return `https://image.pollinations.ai/prompt/${encodeURIComponent(p)}?width=1024&height=576&nologo=true&seed=${seed}`;
+                      const cacheBust = Date.now() + i;
+                      return `https://image.pollinations.ai/prompt/${encodeURIComponent(scenePrompt)}?width=1024&height=576&nologo=true&seed=${seed}&t=${cacheBust}`;
                     });
                   }
                   setResult({
