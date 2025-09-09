@@ -7,6 +7,11 @@ export default function DreamStoryViewer({ images }: { images: string[] }) {
   const timer = useRef<number | null>(null);
   const imgs = useMemo(() => images.filter(Boolean), [images]);
 
+  // Reset index when the images set changes
+  useEffect(() => {
+    setI(0);
+  }, [imgs.length]);
+
   useEffect(() => {
     if (!playing || imgs.length === 0) return;
     timer.current = window.setInterval(
