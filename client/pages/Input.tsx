@@ -382,23 +382,26 @@ export default function InputPage() {
               className="w-full aspect-video object-cover rounded-xl border border-white/10"
             />
             <div className="mt-4 grid grid-cols-2 sm:grid-cols-4 gap-2">
-              {Object.entries(result.emotions).map(([k, v]) => (
-                <div
-                  key={k}
-                  className="rounded-lg bg-white/5 border border-white/10 p-3 text-sm"
-                >
-                  <div className="flex justify-between">
-                    <span className="text-white/70">{k}</span>
-                    <span>{Math.round(v * 100)}%</span>
+              {(["joy", "fear", "mystery", "anxiety"] as const).map((k) => {
+                const v = Math.max(0, Math.min(1, result.emotions?.[k] ?? 0));
+                return (
+                  <div
+                    key={k}
+                    className="rounded-lg bg-white/5 border border-white/10 p-3 text-sm"
+                  >
+                    <div className="flex justify-between">
+                      <span className="text-white/70">{k}</span>
+                      <span>{Math.round(v * 100)}%</span>
+                    </div>
+                    <div className="h-1 rounded bg-white/10 mt-2">
+                      <div
+                        className="h-1 rounded bg-brand-cyan"
+                        style={{ width: `${v * 100}%` }}
+                      />
+                    </div>
                   </div>
-                  <div className="h-1 rounded bg-white/10 mt-2">
-                    <div
-                      className="h-1 rounded bg-brand-cyan"
-                      style={{ width: `${v * 100}%` }}
-                    />
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
 
             {result.storyImages?.length ? (
